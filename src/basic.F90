@@ -1,4 +1,4 @@
-module naive
+module basic
   contains
   subroutine mm(firstmx, secondmx, resultmx, status)
     real (kind = 8), intent(in) :: firstmx(:,:)                ! first matrix
@@ -9,18 +9,28 @@ module naive
     integer (kind = 4), intent(out) :: status                  ! status code (0 means OK)
 
     ! check initial conditions
-    rowsF = size(first, 1)
-    colsF = size(first, 2)
-    rowsS = size(second, 1)
-    colsS = size(second, 2)
+    rowsF = size(firstmx, 1)
+    colsF = size(firstmx, 2)
+    rowsS = size(secondmx, 1)
+    colsS = size(secondmx, 2)
     resultshape = shape(resultmx)
+
+    if (colsF .NE. rowsS) then
+      status = 1
+      return
+    end if
+
+    if (ANY((resultshape - (/rowsF, colsS/)) /= 0)) then
+      status = 2
+      return
+    end if
 
     resultmx = 0
 
     do r = 1, rowsF
       do c = 1, colsS
         do i = 1, colsF
-          resultmx(r, c) = resultmx(r, c) + first(r, i) * second(i, c)
+          resultmx(r, c) = resultmx(r, c) + firstmx(r, i) * secondmx(i, c)
         end do
       end do
     end do
