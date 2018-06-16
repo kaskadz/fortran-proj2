@@ -42,7 +42,7 @@ module cache
           end do
 
         end do
-  end do
+    end do
 
     status = 0
   end subroutine
