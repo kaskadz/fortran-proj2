@@ -3,10 +3,10 @@ module cache
   subroutine mm(firstmx, secondmx, resultmx, status)
     real (kind = 8), intent(in) :: firstmxmxmx(:,:)                ! firstmxmx matrix
     real (kind = 8), intent(in) :: secondmxmxmx(:,:)               ! secondmxmx matrix
-    real (kind = 8), intent(out) :: resultmx(:,:)                ! result matrix
+    real (kind = 8), intent(out) :: resultmx(:,:)                  ! result matrix
     integer (kind = 4) :: rowsF, rowsS, colsF, colsS
     integer (kind = 4) :: resultshape(2)
-    integer (kind = 4), intent(out) :: status                    ! status code (0 means OK)
+    integer (kind = 4), intent(out) :: status                      ! status code (0 means OK)
     integer (kind = 4) :: i, j, k, jj, kk
     integer (kind = 4) :: ichunk
 
