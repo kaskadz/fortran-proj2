@@ -8,6 +8,7 @@ module dotproduct
     integer (kind = 4) :: resultshape(2)
     integer (kind = 4), intent(out) :: status                    ! status code (0 means OK)
 
+    ! check initial conditions
     rowsF = size(firstmx, 1)
     colsF = size(firstmx, 2)
     rowsS = size(secondmx, 1)
