@@ -1,0 +1,198 @@
+#ifndef _MODULE_
+ #define _MODULE_ basic
+#endif
+
+@Test
+subroutine multiplicationToSingularResultTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1, 2)    ! first matrix
+  real (kind = 8) :: second(2, 1)   ! second matrix
+  real (kind = 8) :: result(1, 1)   ! result matix
+  real (kind = 8) :: expected(1, 1) ! expected result matrix
+  integer (kind = 4) :: stat        ! status code (0 means OK)
+
+  first = 2.1
+  second = 3.7
+  expected = reshape([2.1 * 3.7 * 2], shape(expected))
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(resut, expected, 1.0d-5)
+end subroutine
+
+@Test
+subroutine signularMatricesTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1, 1)    ! first matrix
+  real (kind = 8) :: second(1, 1)   ! second matrix
+  real (kind = 8) :: result(1, 1)   ! result matix
+  real (kind = 8) :: expected(1, 1) ! expected result matrix
+  integer (kind = 4) :: stat        ! status code (0 means OK)
+
+  first = 2
+  second = 3
+  expected = reshape([6], shape(expected))
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected)
+end subroutine
+
+
+@Test
+subroutine mismachedDimensionsFailTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1, 2)    ! first matrix
+  real (kind = 8) :: second(3, 4)   ! second matrix
+  real (kind = 8) :: result(1, 1)   ! result matix
+  integer (kind = 4) :: stat        ! status code (0 means OK)
+
+  first = 0
+  second = 0
+  call mm(first, second, result, stat)
+
+  @assertGreaterThan(stat,0)
+end subroutine
+
+@Test
+subroutine mismachedResultDimensionsFailTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1, 2)    ! first matrix
+  real (kind = 8) :: second(2, 3)   ! second matrix
+  real (kind = 8) :: result(1, 1)   ! result matix
+  integer (kind = 4) :: stat        ! status code (0 means OK)
+
+  first = 0
+  second = 0
+  call mm(first, second, result, stat)
+
+  @assertGreaterThan(stat,0)
+end subroutine
+
+@Test
+subroutine singeRowTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1, 4)      ! first matrix
+  real (kind = 8) :: second(4, 2)     ! second matrix
+  real (kind = 8) :: result(1, 2)     ! result matix
+  real (kind = 8) :: expected(1, 2)   ! expected result matrix
+  integer (kind = 4) :: stat          ! status code (0 means OK)
+
+
+  first = reshape([1,2,3,4], shape(first))
+  second = reshape([2,3,4,5], shape(second))
+  expected = matmul(first, second)
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected)
+end subroutine
+
+
+@Test
+subroutine singleColumnTest()
+  use pfunit_mod
+  use _MODULE
+  implicit none
+  real (kind = 8) :: first(4, 1)      ! first matrix
+  real (kind = 8) :: second(1, 3)     ! second matrix
+  real (kind = 8) :: result(4, 3)     ! result matix
+  real (kind = 8) :: expected(4, 3)   ! expected result matrix
+  integer (kind = 4) :: stat          ! status code (0 means OK)
+
+  first = 3
+  second = 2
+  expected = matmul(first, second)
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected)
+end subroutine
+
+@Test
+subroutine simpleMultiplicationTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(2, 3)      ! first matrix
+  real (kind = 8) :: second(3, 4)     ! second matrix
+  real (kind = 8) :: result(2, 4)     ! macierz wynikowa
+  real (kind = 8) :: expected(2, 4)   ! expected result matrix
+  integer (kind = 4) :: stat          ! status code (0 means OK)
+
+  first = reshape([1,4,2,5,3,6], shape(first))
+  second = reshape([1,5,9,2,6,10,3,7,11,4,8,12], shape(second))
+  expected = reshape([38, 83, 44, 98, 50, 113, 56, 128], shape(expected))
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected)
+end subroutine
+
+@Test
+subroutine hugeMatrixTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(1000, 2000)    ! first matrix
+  real (kind = 8) :: second(2000, 3000)   ! second matrix
+  real (kind = 8) :: result(1000, 3000)   ! result matrix
+  real (kind = 8) :: expected(1000, 3000) ! expected result matrix
+  integer (kind = 4) :: stat, i, j        ! status code (0 means OK)
+
+  do i = 1, size(first, 1)
+    do j = 1, size(first, 2)
+      first(i, j) = i * j * 0.25
+    end do
+  end do
+  do i = 1, size(second, 1)
+    do j = 1, size(second, 2)
+      second(i, j) = i * j * 0.10
+    end do
+  end do
+
+  expected = matmul(first, second)
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected, 1.0d-3)
+end subroutine
+
+@Test
+subroutine squareMatrixTest()
+  use pfunit_mod
+  use _MODULE_
+  implicit none
+  real (kind = 8) :: first(591, 591)    ! first matrix
+  real (kind = 8) :: second(591, 591)   ! second matrix
+  real (kind = 8) :: result(591, 591)   ! result matrix
+  real (kind = 8) :: expected(591, 591) ! expected result matrix
+  integer (kind = 4) :: stat, i, j      ! status code (0 means OK)
+
+  do i = 1, size(first, 1)
+    do j = 1, size(first, 2)
+      first(i, j) = i * j * 0.25
+    end do
+  end do
+  do i = 1, size(second, 1)
+    do j = 1, size(second, 2)
+      second(i,j) = i * j * 0.10
+    end do
+  end do
+
+  expected = matmul(first, second)
+  call mm(first, second, result, stat)
+
+  @assertEqual(stat, 0)
+  @assertEqual(result, expected, 1.0d-3)
+end subroutine
