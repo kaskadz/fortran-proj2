@@ -1,14 +1,13 @@
-# Fortran - project 2
-
+# Tasks
 ## Task 1
 Proszę napisać metodę mnożącą dwie macierze o poniższym interfejsie:
 
 ```fortran
 subroutine mm(first, second, multiply, status)
 implicit none
-real (kind = 8), intent(in) :: first(:,:) ! pierwsza macierz
-real (kind = 8), intent(in) :: second(: ,:) ! druga macierz
-real (kind = 8), intent(out) :: multiply(:,:) ! macierz wynikowa
+real (kind = 8), intent(in) :: first(:, :) ! pierwsza macierz
+real (kind = 8), intent(in) :: second(:, :) ! druga macierz
+real (kind = 8), intent(out) :: multiply(:, :) ! macierz wynikowa
 integer (kind = 4), intent(out) :: status ! kod błędu, 0 gdy OK
 end subroutine
 ```
@@ -40,3 +39,22 @@ Proszę narysować wykres gdzie na osi X znajduje się rozmiar macierzy
 N × N, na osi Y czas wykonania w sekundach. Proszę o zachowanie
 skali logarytmicznej na obu osiach oraz wszystkich sposobów mnożenia
 macierzy na jednym wykresie.
+
+# Build
+Use `make -B main MODULE=<method_name>`to produce `./out/main.o` compiled with given multiplication method.
+
+## Methods:
+* `basic` - primitive matrix multiplication
+* `dotproduct` - using `dot_product` function
+* `cache` - CPU cache optimization
+* `dotcache` - dot & cache optimization
+* `builtin` - using `matmul` function
+
+# The tests
+Use `make test -B MODULE=<method_name>` to run the tests for given multplication method.
+
+## Tests for all modules
+`make testall`
+
+# Benchmarking
+Use `make measure` to run benchmarks for all available implementations.
